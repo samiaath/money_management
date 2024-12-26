@@ -1,14 +1,21 @@
 <!-- menu.component.html -->
 <nav>
- 
-
   <ul>
-    <li class="dashboard"><a routerLink="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-    <li><a routerLink="/expenses"><i class="fas fa-wallet"></i> Expenses</a></li>
-    <li><a routerLink="/savings"><i class="fas fa-piggy-bank"></i> Savings</a></li>
-    <li><a routerLink="/reports"><i class="fas fa-chart-line"></i> Reports</a></li>
+    <li class="dashboard">
+      <a (click)="navigateTo('/dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    </li>
+    <li>
+      <a (click)="navigateTo('/expenses')"><i class="fas fa-wallet"></i> Expenses</a>
+    </li>
+    <li>
+      <a (click)="navigateTo('/savings')"><i class="fas fa-piggy-bank"></i> Savings</a>
+    </li>
+    <li>
+      <a (click)="navigateTo('/reports')"><i class="fas fa-chart-line"></i> Reports</a>
+    </li>
   </ul>
-   <!-- Logout button at the bottom -->
+
+  <!-- Logout button at the bottom -->
   <ul class="logout">
     <li>
       <button class="logout-btn">
@@ -17,6 +24,7 @@
     </li>
   </ul>
 </nav>
+
 
 
 
