@@ -1,0 +1,65 @@
+
+.cards
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+    margin-left: 220px;
+}
+.card {
+    width: 15rem;
+    height: 9rem;
+    margin: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to right, #de4722, #d5354f, #5f083c);
+
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    
+}
+.card-subtitle.mb-2.text-body-secondary {
+    color: #ffffff;
+}
+
+.card-body i {
+    font-size: 1rem;
+    margin: 1px;
+}
+
+.card-subtitle {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-top: 3px;
+}
+
+.card-text {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 3px;
+}
+.fas fa-wallet {
+    position: relative;
+    
+    font-size: 1.5rem;
+    color: #fff;
+    
+}
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}

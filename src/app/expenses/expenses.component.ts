@@ -2,12 +2,13 @@ import { Component } from '@angular/core';
 import { Expense } from '../models/expense.model';
 import { Category } from '../models/category.model';
 import { CommonModule } from '@angular/common'; // Import CommonModule
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-expenses',
   templateUrl: './expenses.component.html',
   standalone: true,
-  imports: [CommonModule],  // Add CommonModule to imports
+  imports: [CommonModule,RouterModule],  // Add CommonModule to imports
   styleUrls: ['./expenses.component.css']
 })
 export class ExpensesComponent {
