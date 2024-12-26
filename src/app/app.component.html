@@ -1,11 +1,18 @@
 <!-- app.component.html -->
-<body>
+<div class="app-container">
+    <app-header></app-header>
     
-
-<app-header></app-header>
-<app-menu></app-menu>
-<router-outlet></router-outlet>
-
+    <div class="main-content">
+      <app-menu class="menu"></app-menu>  <!-- Your standalone menu component -->
+      <div class="content-area">
+        <router-outlet></router-outlet>  <!-- Routed components will display here -->
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  
 
     
 </body>
