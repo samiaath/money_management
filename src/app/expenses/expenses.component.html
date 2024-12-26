@@ -1,0 +1,11 @@
+<div>
+    <h2>Expenses</h2>
+    <ul>
+      <li *ngFor="let expense of expenses">
+        {{ expense.description }}: {{ expense.amount | currency }} ({{ expense.date | date: 'shortDate' }})
+      </li>
+    </ul>
+  </div>
+  
+
+  
