@@ -4,62 +4,57 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 20px;
-    margin-left: 220px;
 }
 .card {
-    width: 15rem;
+    width: 16rem;
     height: 9rem;
-    margin: 15px;
+    margin-right: 30px;
+    margin-bottom: 15px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding-right: 15px;
+    border: none;
+    box-shadow: none;
     background: linear-gradient(to right, #de4722, #d5354f, #5f083c);
-
+    border-radius: 10px; 
 }
 
 .card-body {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
+    
+    align-items: left;
+    text-align: left;
+
+    
     
 }
-.card-subtitle.mb-2.text-body-secondary {
+
+
+
+.icon-container {
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: white;
+}
+.icons-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+   
+}
+.card-text {
+    margin-top: 5px;
     color: #ffffff;
 }
 
-.card-body i {
-    font-size: 1rem;
-    margin: 1px;
-}
 
-.card-subtitle {
-    font-size: 0.9rem;
-    color: #6c757d;
-    margin-top: 3px;
-}
 
-.card-text {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-top: 3px;
-}
-.fas fa-wallet {
-    position: relative;
-    
-    font-size: 1.5rem;
-    color: #fff;
-    
-}
-.cards {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 20px;
-}
+
