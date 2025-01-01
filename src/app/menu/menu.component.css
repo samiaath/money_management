@@ -1,15 +1,12 @@
-/* menu.component.css */
 nav {
   position: fixed;
-  
   height: 100%;
   width: 250px; /* Sidebar width */
   background-color: #181B3A; /* Dark background color */
   padding: 0px;
- 
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Space between content and logout button */
+  justify-content: space-between; /* Space between menu items and logout button */
   cursor: pointer;
 }
 
@@ -33,7 +30,7 @@ a {
   text-decoration: none;
   color: #fff !important; /* Set text color to white */
   font-size: 1.1rem; /* Slightly larger font size */
-  padding: 12px ; /* Padding around each menu item */
+  padding: 12px; /* Padding around each menu item */
   border-radius: 8px; /* Rounded corners on hover */
   transition: background-color 0.3s, color 0.3s; /* Smooth transition */
 }
@@ -54,12 +51,11 @@ a:hover i {
   color: white !important; /* White icon on hover */
 }
 
-/* Optional: Active link style */
+/* Active link style */
 a.router-link-active {
   background-color: #0056b3; /* Darker blue when the link is active */
 }
 
-/* Ensure the links are properly spaced in a clean vertical layout */
 nav ul li a {
   display: flex;
   align-items: center;
@@ -68,8 +64,9 @@ nav ul li a {
 
 /* Logout button at the bottom */
 .logout {
-  margin-top: auto;
-  margin-bottom: 80px; /* Push logout button to the bottom */
+  margin-top: auto; /* Push logout button to the bottom */
+  padding: 20px; /* Add padding for spacing */
+  background-color: #181B3A; /* Match sidebar background */
 }
 
 .logout-btn {
@@ -94,10 +91,11 @@ nav ul li a {
 
 /* Hover effect for logout button */
 .logout-btn:hover {
-  background-color: #3E5879; /* Red background on hover */
+  background-color: #3E5879; /* Blue background on hover */
   color: white !important;
 }
 
 .logout-btn:hover i {
   color: white !important; /* White icon on hover */
 }
+

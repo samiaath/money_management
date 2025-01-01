@@ -1,17 +1,17 @@
 <div class="app-container">
-    <app-header></app-header>
-  
-    <div class="main-content">
-      <app-menu class="menu">
-        <nav>
-          <!-- Use routerLink to navigate between routes -->
-          <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-          <a routerLink="/expenses" routerLinkActive="active">Expenses</a>
-        </nav>
-      </app-menu>
-  
-      <div class="content-area">
-        <router-outlet></router-outlet> <!-- This is where routed components will appear -->
-      </div>
+  <app-header></app-header>
+
+  <div class="main-content">
+    <app-menu class="menu">
+      <nav>
+        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+        <a routerLink="/expenses" routerLinkActive="active">Expenses</a>
+      </nav>
+    </app-menu>
+
+    <div class="content-area">
+      <router-outlet></router-outlet>
     </div>
   </div>
+</div>
+
