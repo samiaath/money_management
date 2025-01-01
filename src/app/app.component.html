@@ -1,15 +1,11 @@
-<!-- app.component.html -->
-<div class="app-container">
-    <app-header></app-header>
-    
-    <div class="main-content">
-      <app-menu class="menu"></app-menu>  <!-- Your standalone menu component -->
-      <div class="content-area">
-        <router-outlet></router-outlet>  <!-- Routed components will display here -->
-      </div>
-    </div>
-  </div>
-  
+<div *ngIf="isLoggedIn(); else loginTemplate">
+  <app-layout></app-layout> <!-- Display LayoutComponent if logged in -->
+</div>
+
+<ng-template #loginTemplate>
+  <app-login></app-login> <!-- Display LoginComponent if not logged in -->
+</ng-template>
+
   
   
   

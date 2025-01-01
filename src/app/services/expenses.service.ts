@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Category } from './models/category.model';
-import { Expense } from './models/expense.model';
+import { Category } from '../models/category.model';
+import { Expense } from '../models/expense.model';
 
 @Injectable({
   providedIn: 'root',

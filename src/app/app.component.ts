@@ -1,21 +1,27 @@
-/*app.component.ts*/
 import { Component } from '@angular/core';
-import { RouterOutlet, RouterModule } from '@angular/router'; 
-import { HeaderComponent } from './header/header.component';
-import { MenuComponent } from './menu/menu.component';
-import { ExpensesComponent } from './expenses/expenses.component';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { RouterModule } from '@angular/router';
+import { LayoutComponent } from './layout/layout.component';
+import { LoginComponent } from './login/login.component';
+import { CommonModule } from '@angular/common'; 
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet, RouterModule, HeaderComponent, MenuComponent, ExpensesComponent,DashboardComponent], // Import RouterModule
+  standalone: true,  // Marking the component as standalone
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  imports: [RouterModule, LayoutComponent, LoginComponent,CommonModule] // Import the required components
 })
 export class AppComponent {
-  title = 'money_management';
+  title = 'money-manager';
+
+  // Check if the user is logged in using sessionStorage
+  isLoggedIn(): boolean {
+    // Ensure sessionStorage is only accessed in the browser
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      return sessionStorage.getItem('isLoggedIn') === 'true'; // Check login status
+    }
+    return false; // Default value if sessionStorage is not available
+  }
 }
+
 

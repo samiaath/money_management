@@ -2,8 +2,10 @@
 
 /* General header style */
 header {
-  background-color: #090D28; /* Dark background color */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Light shadow */
+  background-color: #181B3A; /* Dark background color */
+  margin: 0;
+  width: 100%;
+  height: 100%;
   color: white; /* White text color */
 }
 
