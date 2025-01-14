@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { SavingsService } from '../services/savings.service';
-import { ExpensesService } from '../services/expenses.service'; // Import the ExpensesService
+import { ExpenseService } from '../services/expenses.service'; // Import the ExpensesService
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -23,7 +23,7 @@ export class SavingsComponent implements OnInit {
   monthlyExpenses: number = 0;
   monthlyBudget: number = 0;
 
-  constructor(private fb: FormBuilder, private savingsService: SavingsService, private expensesService: ExpensesService) {}
+  constructor(private fb: FormBuilder, private savingsService: SavingsService, private expenseService: ExpenseService) {}
 
   ngOnInit(): void {
     this.savingsForm = this.fb.group({
@@ -43,7 +43,7 @@ export class SavingsComponent implements OnInit {
     this.monthlyIncome = this.savingsService.getCurrentIncome();
 
     // Récupérer les dépenses mensuelles depuis le service
-    this.monthlyExpenses = this.expensesService.getTotalExpenses();
+    this.monthlyExpenses = this.expenseService.getTotalExpenses();
   }
 
   onSaveGoal(): void {

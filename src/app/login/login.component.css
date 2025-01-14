@@ -135,7 +135,8 @@ input:focus {
 }
 
 .extra-links a:hover {
-  color: #9370db; /* Lighter violet */
+  color: #9370db;
+  cursor: pointer; /* Lighter violet */
 }
 
 /* Animations */

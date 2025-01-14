@@ -1,39 +1,34 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { Expense } from '../models/expense.model'; // Assure-toi que le chemin est correct
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ExpensesService {
-  private expensesSubject = new BehaviorSubject<Expense[]>([
-    { id: 1, category: 'Food', description: 'Groceries', amount: 50, date: new Date('2025-01-01') },
-    { id: 2, category: 'Housing', description: 'Rent', amount: 500, date: new Date('2025-01-01') },
-    { id: 3, category: 'Utilities', description: 'Electricity Bill', amount: 75, date: new Date('2025-01-01') },
-    { id: 4, category: 'Transport', description: 'Bus Pass', amount: 30, date: new Date('2025-01-01') },
-  ]);
-  expenses$ = this.expensesSubject.asObservable();
+export class ExpenseService {
+  private apiUrl = 'http://localhost:5000/api/depenses'; // Backend route for depenses
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
+  addExpense(expense: { amount: string, date: string, category: string, description: string }) {
+    return this.http.post(this.apiUrl, expense);
+  }
+  getAllDepenses(): Observable<any> {
+    return this.http.get<any>(this.apiUrl);
+  }
+  
 
-  getExpenses(): Expense[] {
-    return this.expensesSubject.getValue();
+  createDepense(newDepense: any): Observable<any> {
+    return this.http.post(this.apiUrl, newDepense);
   }
 
-  addExpense(expense: Expense): void {
-    const currentExpenses = this.getExpenses();
-    this.expensesSubject.next([...currentExpenses, expense]);
+  getDepenseById(id: number): Observable<any> {
+    return this.http.get<any>(${this.apiUrl}/${id});
   }
 
-  getTotalAmountByCategory(category: string): number {
-    return this.getExpenses()
-      .filter(expense => expense.category === category)
-      .reduce((total, expense) => total + expense.amount, 0);
-  }
+  
 
-  getTotalExpenses(): number {
-    return this.getExpenses()
-      .reduce((total, expense) => total + expense.amount, 0);
+  deleteDepense(id: number): Observable<any> {
+    return this.http.delete<any>(${this.apiUrl}/${id});
   }
-
 }
+localhost

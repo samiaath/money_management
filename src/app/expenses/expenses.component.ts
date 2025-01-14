@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ExpensesService } from '../services/expenses.service';
+import { ExpenseService } from '../services/expenses.service';
 import { Expense } from '../models/expense.model'; // Assure-toi que le chemin est correct
 
 @Component({
@@ -21,7 +21,7 @@ export class ExpensesComponent {
 
   expenseForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private expensesService: ExpensesService) {
+  constructor(private fb: FormBuilder, private expenseService: ExpenseService) {
     this.expenseForm = this.fb.group({
       category: ['', Validators.required],
       amount: [null, [Validators.required, Validators.min(0.01)]],
@@ -32,21 +32,20 @@ export class ExpensesComponent {
 
   addExpense() {
     if (this.expenseForm.valid) {
-      const newExpense: Expense = {
-        id: this.expensesService.getExpenses().length + 1,
+      const newExpense = {
         category: this.expenseForm.value.category,
-        amount: this.expenseForm.value.amount,
+        amount: this.expenseForm.value.amount.toString(),
         description: this.expenseForm.value.description,
-        date: new Date(this.expenseForm.value.date),
+        date: new Date(this.expenseForm.value.date).toISOString(),
       };
 
-      this.expensesService.addExpense(newExpense);
+      this.expenseService.addExpense(newExpense);
       this.expenseForm.reset();
     }
   }
 
   get expenses() {
-    return this.expensesService.getExpenses();
+    return this.expenseService.getAllDepenses();
   }
 
   selectCategory(category: { name: string }) {

@@ -4,7 +4,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ChartConfiguration, ChartOptions, ChartType } from "chart.js";
 import { NgChartsModule } from 'ng2-charts';
 import { Router } from '@angular/router';
-import { ExpensesService } from '../services/expenses.service'; // Import the ExpensesService
+import { ExpenseService } from '../services/expenses.service'; // Import the ExpensesService
 import { SavingsService } from '../services/savings.service'; // Import the SavingsService
 import { Expense } from '../models/expense.model'; // Import the Expense model
 @Component({
@@ -122,11 +122,11 @@ export class DashboardComponent implements OnInit {
   totalBalance: number = 0;
 
 
-  constructor(private router: Router, private expensesService: ExpensesService, private savingsService: SavingsService) {} // Inject the ExpensesService and SavingsService
+  constructor(private router: Router, private expenseService: ExpenseService, private savingsService: SavingsService) {} // Inject the ExpensesService and SavingsService
   
   ngOnInit(): void {
     this.updateDonutChartData();
-    this.totalExpenses = this.expensesService.getTotalExpenses();
+    this.totalExpenses = this.expenseService.getTotalExpenses();
     this.totalSavings = this.savingsService.getCurrentSavings();
     this.totalIncome = this.savingsService.getCurrentIncome();
     this.calculateTotalBalance();
@@ -143,7 +143,7 @@ export class DashboardComponent implements OnInit {
     const monthlyExpenses = new Array(12).fill(0);
     const monthlyIncome = new Array(12).fill(0);
 
-    this.expensesService.getExpenses().forEach(expense => {
+    this.expenseService. getAllDepenses().forEach(expense => {
       const month = new Date(expense.date).getMonth();
       monthlyExpenses[month] += expense.amount;
     });
@@ -162,7 +162,7 @@ export class DashboardComponent implements OnInit {
   // Method to update the donut chart data
   updateDonutChartData(): void {
     const categories = ['Food', 'Housing', 'Utilities', 'Transport'];
-    const data = categories.map(category => this.expensesService.getTotalAmountByCategory(category));
+    const data = categories.map(category => this.expenseService.getTotalAmountByCategory(category));
     
     this.donutChartData.datasets[0].data = data;
   }
@@ -173,8 +173,10 @@ export class DashboardComponent implements OnInit {
 
   recentExpenses: Expense[] = [];
   updateRecentExpenses(): void {
-    this.recentExpenses = this.expensesService.getExpenses()
-      .sort((a, b) => b.date.getTime() - a.date.getTime())
-      .slice(0, 3);
+    this.expenseService.getAllDepenses().subscribe(expenses => {
+      this.recentExpenses = expenses
+        .sort((a: Expense, b: Expense) => b.date.getTime() - a.date.getTime())
+        .slice(0, 3);
+    });
   }
 }

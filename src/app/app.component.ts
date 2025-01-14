@@ -3,13 +3,15 @@ import { RouterModule } from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
 import { LoginComponent } from './login/login.component';
 import { CommonModule } from '@angular/common'; 
+import { RegisterComponent } from './register/register.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,  // Marking the component as standalone
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  imports: [RouterModule, LayoutComponent, LoginComponent,CommonModule] // Import the required components
+  imports: [RouterModule, LayoutComponent, LoginComponent, CommonModule, RegisterComponent] // Import the required components
+ // Import the required components
 })
 export class AppComponent {
   title = 'money-manager';

@@ -1,6 +1,7 @@
 <div class="container">
 
     <div class="cards">
+        <a (click)="navigateTo('/savings')">
         <div class="card">
             <div class="card-body">
                 <div class="icons-container">
@@ -15,7 +16,10 @@
                     <h4 class="card-text">${{totalBalance}}</h4>
                 </div>
             </div>
+        
         </div>
+    </a>
+    <a (click)="navigateTo('/savings')">
         <div class="card">
             <div class="card-body">
                 <div class="icon-container">
@@ -26,6 +30,7 @@
                 <h4 class="card-text">${{ totalIncome}}</h4>
             </div>
         </div>
+    </a>
         <a (click)="navigateTo('/expenses')">
             <div class="card">
                 <div class="card-body">

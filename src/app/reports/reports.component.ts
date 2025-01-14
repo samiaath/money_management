@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import { SavingsService } from '../services/savings.service';
-import { ExpensesService } from '../services/expenses.service';
+import { ExpenseService } from '../services/expenses.service';
 
 @Component({
   selector: 'app-reports',
@@ -13,7 +13,7 @@ export class ReportsComponent implements OnInit {
   savingsAmount: number = 0;
   expensesByCategory: { category: string; amount: number }[] = [];
 
-  constructor(private savingsService: SavingsService, private expensesService: ExpensesService) {
+  constructor(private savingsService: SavingsService, private expenseService: ExpenseService) {
     Chart.register(...registerables);
   }
 
@@ -50,7 +50,7 @@ export class ReportsComponent implements OnInit {
     const categories = ['Housing', 'Food', 'Transport', 'Utilities'];
     this.expensesByCategory = categories.map((category) => ({
       category,
-      amount: this.expensesService.getTotalAmountByCategory(category),
+      amount: this.expenseService.getTotalAmountByCategory(category),
     }));
 
     // Add savings category
