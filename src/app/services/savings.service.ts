@@ -2,22 +2,36 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root', // Make sure the service is available throughout the application
+  providedIn: 'root',
 })
 export class SavingsService {
-  private currentSavingsSubject = new BehaviorSubject<number>(0); // Initial savings value
-  currentSavings$ = this.currentSavingsSubject.asObservable(); // Observable for components to subscribe to
+  private currentSavingsSubject = new BehaviorSubject<number>(0);
+  currentSavings$ = this.currentSavingsSubject.asObservable();
+
+  private currentIncomeSubject = new BehaviorSubject<number>(0);
+  currentIncome$ = this.currentIncomeSubject.asObservable();
 
   constructor() {}
 
-  // Method to update savings
   updateSavings(newSavings: number): void {
-    this.currentSavingsSubject.next(newSavings); // Update the savings value
+    this.currentSavingsSubject.next(newSavings);
   }
 
-  // Method to get current savings
   getCurrentSavings(): number {
     return this.currentSavingsSubject.getValue();
   }
-}
 
+  updateIncome(newIncome: number): void {
+    this.currentIncomeSubject.next(newIncome);
+  }
+
+  getCurrentIncome(): number {
+    return this.currentIncomeSubject.getValue();
+  }
+
+  // Method to get monthly income data
+  getMonthlyIncomeData(): number[] {
+    // Placeholder data for demonstration
+    return [this.getCurrentIncome(), 1200, 1100, 1300, 1250, 1400, 1350, 1500, 1450, 1600, 1550, 1700];
+  }
+}

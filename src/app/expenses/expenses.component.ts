@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
+import { ExpensesService } from '../services/expenses.service';
+import { Expense } from '../models/expense.model'; // Assure-toi que le chemin est correct
 
 @Component({
   selector: 'app-expenses',
@@ -11,11 +12,6 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./expenses.component.css'],
 })
 export class ExpensesComponent {
-  expenses = [
-    { id: 1, category: 'Food', amount: 50, description: 'Groceries', date: new Date('2024-12-01') },
-    { id: 2, category: 'Housing', amount: 500, description: 'Rent', date: new Date('2024-12-01') },
-  ];
-
   categories = [
     { id: 1, name: 'Food', icon: 'fas fa-utensils' },
     { id: 2, name: 'Housing', icon: 'fas fa-home' },
@@ -25,7 +21,7 @@ export class ExpensesComponent {
 
   expenseForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private expensesService: ExpensesService) {
     this.expenseForm = this.fb.group({
       category: ['', Validators.required],
       amount: [null, [Validators.required, Validators.min(0.01)]],
@@ -33,24 +29,25 @@ export class ExpensesComponent {
       date: [null, Validators.required],
     });
   }
-  
+
   addExpense() {
     if (this.expenseForm.valid) {
-      const newExpense = {
-        id: this.expenses.length + 1,  // You may want to make sure IDs are unique or managed correctly.
+      const newExpense: Expense = {
+        id: this.expensesService.getExpenses().length + 1,
         category: this.expenseForm.value.category,
         amount: this.expenseForm.value.amount,
         description: this.expenseForm.value.description,
         date: new Date(this.expenseForm.value.date),
       };
-      
-      this.expenses.push(newExpense);
-  
-      // Reset the form
+
+      this.expensesService.addExpense(newExpense);
       this.expenseForm.reset();
     }
   }
-  
+
+  get expenses() {
+    return this.expensesService.getExpenses();
+  }
 
   selectCategory(category: { name: string }) {
     this.expenseForm.controls['category'].setValue(category.name);
@@ -65,4 +62,3 @@ export class ExpensesComponent {
     return category ? category.icon : '';
   }
 }
-

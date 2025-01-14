@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { SavingsService } from '../services/savings.service';  // Import the savings service
+import { SavingsService } from '../services/savings.service';
+import { ExpensesService } from '../services/expenses.service'; // Import the ExpensesService
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -10,15 +11,11 @@ import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angula
   styleUrls: ['./savings.component.css'],
   imports: [ReactiveFormsModule, CommonModule]
 })
-
-
-
-
 export class SavingsComponent implements OnInit {
   savingsForm!: FormGroup;
   incomeForm!: FormGroup;
   budgetForm!: FormGroup;
-  savingsGoal: number = 0;  // Fixed savings goal
+  savingsGoal: number = 0;
   currentSavings: number = 0;
   addedSavings: number[] = [];
   progress: number = 0;
@@ -26,7 +23,7 @@ export class SavingsComponent implements OnInit {
   monthlyExpenses: number = 0;
   monthlyBudget: number = 0;
 
-  constructor(private fb: FormBuilder, private savingsService: SavingsService) {}
+  constructor(private fb: FormBuilder, private savingsService: SavingsService, private expensesService: ExpensesService) {}
 
   ngOnInit(): void {
     this.savingsForm = this.fb.group({
@@ -41,28 +38,32 @@ export class SavingsComponent implements OnInit {
     this.budgetForm = this.fb.group({
       expenses: ['', [Validators.required, Validators.min(0)]],
     });
+
+    // Récupérer le monthlyIncome depuis le service
+    this.monthlyIncome = this.savingsService.getCurrentIncome();
+
+    // Récupérer les dépenses mensuelles depuis le service
+    this.monthlyExpenses = this.expensesService.getTotalExpenses();
   }
 
-  // Save the savings goal and current savings
   onSaveGoal(): void {
     if (this.savingsForm.valid) {
       if (this.savingsGoal === 0) {
         this.savingsGoal = this.savingsForm.value.goal;
       }
       this.currentSavings = this.savingsForm.value.current;
-      this.savingsService.updateSavings(this.currentSavings);  // Update savings in service
+      this.savingsService.updateSavings(this.currentSavings);
       this.calculateProgress();
       this.savingsForm.get('current')?.reset();
     }
   }
 
-  // Add more savings
   addMoreSavings(): void {
     const additionalSavings = this.savingsForm.value.current;
     if (additionalSavings > 0) {
       this.addedSavings.push(additionalSavings);
       this.currentSavings += additionalSavings;
-      this.savingsService.updateSavings(this.currentSavings);  // Update savings in service
+      this.savingsService.updateSavings(this.currentSavings);
       this.calculateProgress();
       this.savingsForm.get('current')?.reset();
     }
@@ -77,6 +78,7 @@ export class SavingsComponent implements OnInit {
   onSetIncome(): void {
     if (this.incomeForm.valid) {
       this.monthlyIncome = this.incomeForm.value.income;
+      this.savingsService.updateIncome(this.monthlyIncome); // Mettre à jour le monthlyIncome dans le service
       this.calculateBudget();
       this.incomeForm.reset();
     }
@@ -86,6 +88,7 @@ export class SavingsComponent implements OnInit {
     const additionalIncome = this.incomeForm.value.income;
     if (additionalIncome > 0) {
       this.monthlyIncome += additionalIncome;
+      this.savingsService.updateIncome(this.monthlyIncome); // Mettre à jour le monthlyIncome dans le service
       this.calculateBudget();
       this.incomeForm.reset();
     }
@@ -103,4 +106,3 @@ export class SavingsComponent implements OnInit {
     this.monthlyBudget = this.monthlyIncome - this.monthlyExpenses;
   }
 }
-

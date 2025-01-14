@@ -1,11 +1,13 @@
-
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ChartConfiguration, ChartOptions, ChartType } from "chart.js";
 import { NgChartsModule } from 'ng2-charts';
-
-@Component({  
+import { Router } from '@angular/router';
+import { ExpensesService } from '../services/expenses.service'; // Import the ExpensesService
+import { SavingsService } from '../services/savings.service'; // Import the SavingsService
+import { Expense } from '../models/expense.model'; // Import the Expense model
+@Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, NgChartsModule],
@@ -13,28 +15,18 @@ import { NgChartsModule } from 'ng2-charts';
   styleUrls: ['./dashboard.component.css'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   title = 'ng2-charts-demo';
   
   public lineChartData: ChartConfiguration['data'] = {
     labels:  [
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      '10',
-      '1',
-      '12'
+      'January', 'February', 'March', 'April', 'May', 'June', 
+      'July', 'August', 'September', 'October', 'November', 'December'
     ],
   
     datasets: [
       {
-        data: [ 32, 42, 31, 39,33, 48, 42, 38, 32, 38, 42,32],
+        data: [], // Initialize with empty data
         label: 'Income',
         fill: true,
         tension: 0.5,
@@ -42,7 +34,7 @@ export class DashboardComponent {
         backgroundColor: 'rgba(128, 179, 146, 0.3)'
       },
       {
-        data: [ 30, 40, 29, 37,31, 46, 40, 36, 30, 36, 40,30],
+        data: [], // Initialize with empty data
         label: 'Expenses',
         fill: true,
         tension: 0.5,
@@ -96,7 +88,7 @@ export class DashboardComponent {
     labels: ['Food', 'Housing', 'Utilities', 'Transport'],
     datasets: [
       {
-        data: [300, 500, 100, 200],
+        data: [], // Initialize with empty data
         backgroundColor: ['#4caf50', '#ffeb3b', '#f44336', '#2196f3'],
         hoverBackgroundColor: ['#4caf50', '#ffeb3b', '#f44336', '#2196f3']
       }
@@ -124,6 +116,65 @@ export class DashboardComponent {
     { name: 'Currency', type: 'BDT' }
   ];
 
-}
- 
+  totalExpenses: number = 0; 
+  totalSavings: number = 0;
+  totalIncome: number = 0;
+  totalBalance: number = 0;
 
+
+  constructor(private router: Router, private expensesService: ExpensesService, private savingsService: SavingsService) {} // Inject the ExpensesService and SavingsService
+  
+  ngOnInit(): void {
+    this.updateDonutChartData();
+    this.totalExpenses = this.expensesService.getTotalExpenses();
+    this.totalSavings = this.savingsService.getCurrentSavings();
+    this.totalIncome = this.savingsService.getCurrentIncome();
+    this.calculateTotalBalance();
+    this.updateLineChartData(); // Update the line chart data
+    this.updateRecentExpenses();
+  }
+
+  calculateTotalBalance(): void {
+    this.totalBalance = this.totalIncome - this.totalSavings - this.totalExpenses;
+  }
+
+  // Method to update the line chart data
+  updateLineChartData(): void {
+    const monthlyExpenses = new Array(12).fill(0);
+    const monthlyIncome = new Array(12).fill(0);
+
+    this.expensesService.getExpenses().forEach(expense => {
+      const month = new Date(expense.date).getMonth();
+      monthlyExpenses[month] += expense.amount;
+    });
+
+    // Assuming you have a method to get monthly income data
+    // Here, we use a placeholder for demonstration
+    const incomeData = this.savingsService.getMonthlyIncomeData();
+    incomeData.forEach((income, index) => {
+      monthlyIncome[index] = income;
+    });
+
+    this.lineChartData.datasets[0].data = monthlyIncome;
+    this.lineChartData.datasets[1].data = monthlyExpenses;
+  }
+
+  // Method to update the donut chart data
+  updateDonutChartData(): void {
+    const categories = ['Food', 'Housing', 'Utilities', 'Transport'];
+    const data = categories.map(category => this.expensesService.getTotalAmountByCategory(category));
+    
+    this.donutChartData.datasets[0].data = data;
+  }
+
+  navigateTo(path: string): void {
+    this.router.navigate([path]); // Navigate to the selected path
+  }
+
+  recentExpenses: Expense[] = [];
+  updateRecentExpenses(): void {
+    this.recentExpenses = this.expensesService.getExpenses()
+      .sort((a, b) => b.date.getTime() - a.date.getTime())
+      .slice(0, 3);
+  }
+}

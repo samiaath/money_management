@@ -7,7 +7,7 @@
 
 .card {
     width: 16rem;
-    height: 8.9git rem;
+    height: 8.9rem;
     margin-right: 30px;
     margin-bottom: 15px;
     display: flex;
@@ -17,6 +17,13 @@
     box-shadow: none;
     background: linear-gradient(to right, #de4722, #d5354f, #5f083c);
     border-radius: 10px;
+    cursor: pointer; /* Makes the card clickable */
+    transition: transform 0.2s; /* Adds a transition effect */
+
+    /* Optional: Add a hover effect */
+    &:hover {
+        transform: scale(1.05); /* Slightly enlarges the card on hover */
+    }
 }
 
 .card-body {
