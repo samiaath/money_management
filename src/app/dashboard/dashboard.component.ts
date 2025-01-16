@@ -1,32 +1,34 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ChartConfiguration, ChartOptions, ChartType } from "chart.js";
+import { Chart, ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 import { Router } from '@angular/router';
-import { ExpenseService } from '../services/expenses.service'; // Import the ExpensesService
-import { SavingsService } from '../services/savings.service'; // Import the SavingsService
-import { Expense } from '../models/expense.model'; // Import the Expense model
+import { ExpenseService } from '../services/expenses.service';
+import { SavingsService } from '../services/savings.service';
+import { Expense } from '../models/expense.model';
+import { HttpClientModule } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [CommonModule, NgChartsModule, HttpClientModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class DashboardComponent implements OnInit {
   title = 'ng2-charts-demo';
-  
+
   public lineChartData: ChartConfiguration['data'] = {
-    labels:  [
-      'January', 'February', 'March', 'April', 'May', 'June', 
+    labels: [
+      'January', 'February', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'
     ],
-  
     datasets: [
       {
-        data: [], // Initialize with empty data
+        data: [],
         label: 'Income',
         fill: true,
         tension: 0.5,
@@ -34,7 +36,7 @@ export class DashboardComponent implements OnInit {
         backgroundColor: 'rgba(128, 179, 146, 0.3)'
       },
       {
-        data: [], // Initialize with empty data
+        data: [],
         label: 'Expenses',
         fill: true,
         tension: 0.5,
@@ -48,11 +50,11 @@ export class DashboardComponent implements OnInit {
     responsive: false,
     maintainAspectRatio: false
   };
-  
+
   public lineChartLegend = true;
-  
+
   public apexChartOptions: any = {
-    series: [], // Add this line to include the series property
+    series: [],
     chart: {
       type: 'line'
     },
@@ -80,15 +82,16 @@ export class DashboardComponent implements OnInit {
       }
     },
     fill: {
-      opacity: 0 // Set opacity to 0 to remove the fill under the curve
+      opacity: 0
     }
   };
-  
+
+  // Static donut chart configuration
   public donutChartData: ChartConfiguration['data'] = {
     labels: ['Food', 'Housing', 'Utilities', 'Transport'],
     datasets: [
       {
-        data: [], // Initialize with empty data
+        data: [300, 500, 100, 200],
         backgroundColor: ['#4caf50', '#ffeb3b', '#f44336', '#2196f3'],
         hoverBackgroundColor: ['#4caf50', '#ffeb3b', '#f44336', '#2196f3']
       }
@@ -116,21 +119,20 @@ export class DashboardComponent implements OnInit {
     { name: 'Currency', type: 'BDT' }
   ];
 
-  totalExpenses: number = 0; 
+  totalExpenses: number = 0;
   totalSavings: number = 0;
   totalIncome: number = 0;
   totalBalance: number = 0;
+  chart!: Chart;
 
+  constructor(private router: Router, private expenseService: ExpenseService, private savingsService: SavingsService) {}
 
-  constructor(private router: Router, private expenseService: ExpenseService, private savingsService: SavingsService) {} // Inject the ExpensesService and SavingsService
-  
   ngOnInit(): void {
-    this.updateDonutChartData();
-    this.totalExpenses = this.expenseService.getTotalExpenses();
+    this.loadTotalExpenses();
     this.totalSavings = this.savingsService.getCurrentSavings();
     this.totalIncome = this.savingsService.getCurrentIncome();
     this.calculateTotalBalance();
-    this.updateLineChartData(); // Update the line chart data
+    this.updateLineChartData();
     this.updateRecentExpenses();
   }
 
@@ -138,45 +140,48 @@ export class DashboardComponent implements OnInit {
     this.totalBalance = this.totalIncome - this.totalSavings - this.totalExpenses;
   }
 
-  // Method to update the line chart data
   updateLineChartData(): void {
-    const monthlyExpenses = new Array(12).fill(0);
-    const monthlyIncome = new Array(12).fill(0);
+    const monthlyExpenses: number[] = new Array(12).fill(0);
+    const monthlyIncome: number[] = new Array(12).fill(0);
 
-    this.expenseService. getAllDepenses().forEach(expense => {
-      const month = new Date(expense.date).getMonth();
-      monthlyExpenses[month] += expense.amount;
+    this.expenseService.getAllDepenses().subscribe(expenses => {
+      expenses.forEach((expense: Expense) => {
+        const month = new Date(expense.date).getMonth();
+        monthlyExpenses[month] += expense.amount;
+      });
+
+      const incomeData = this.savingsService.getMonthlyIncomeData();
+      incomeData.forEach((income, index) => {
+        monthlyIncome[index] = income;
+      });
+
+      this.lineChartData.datasets[0].data = monthlyIncome;
+      this.lineChartData.datasets[1].data = monthlyExpenses;
     });
-
-    // Assuming you have a method to get monthly income data
-    // Here, we use a placeholder for demonstration
-    const incomeData = this.savingsService.getMonthlyIncomeData();
-    incomeData.forEach((income, index) => {
-      monthlyIncome[index] = income;
-    });
-
-    this.lineChartData.datasets[0].data = monthlyIncome;
-    this.lineChartData.datasets[1].data = monthlyExpenses;
-  }
-
-  // Method to update the donut chart data
-  updateDonutChartData(): void {
-    const categories = ['Food', 'Housing', 'Utilities', 'Transport'];
-    const data = categories.map(category => this.expenseService.getTotalAmountByCategory(category));
-    
-    this.donutChartData.datasets[0].data = data;
   }
 
   navigateTo(path: string): void {
-    this.router.navigate([path]); // Navigate to the selected path
+    this.router.navigate([path]);
   }
 
   recentExpenses: Expense[] = [];
   updateRecentExpenses(): void {
     this.expenseService.getAllDepenses().subscribe(expenses => {
       this.recentExpenses = expenses
-        .sort((a: Expense, b: Expense) => b.date.getTime() - a.date.getTime())
+        .sort((a: Expense, b: Expense) => new Date(b.date).getTime() - new Date(a.date).getTime())
         .slice(0, 3);
     });
+  }
+
+  loadTotalExpenses(): void {
+    this.expenseService.getTotalExpenses().subscribe(
+      (data) => {
+        this.totalExpenses = data.totalAmount;
+        this.calculateTotalBalance();
+      },
+      (error) => {
+        console.error('Error fetching total expenses:', error);
+      }
+    );
   }
 }

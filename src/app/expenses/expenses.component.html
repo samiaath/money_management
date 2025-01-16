@@ -61,8 +61,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let expense of expenses | async">
-          <td>{{ expense.id }}</td>
+        <tr *ngFor="let expense of expenses$ | async; let i = index">
+          <td>{{ i + 1 }}</td>
           <td><i [class]="getCategoryIcon(expense.category)"></i> {{ expense.category }}</td>
           <td>{{ expense.amount | currency }}</td>
           <td>{{ expense.description }}</td>
@@ -72,5 +72,3 @@
     </table>
   </div>
 </div>
-
-

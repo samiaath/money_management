@@ -1,15 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { SavingsService } from '../services/savings.service';
-import { ExpenseService } from '../services/expenses.service'; // Import the ExpensesService
+import { ExpenseService } from '../services/expenses.service';// Assure-toi que le chemin est correct
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-savings',
   standalone: true,
   templateUrl: './savings.component.html',
   styleUrls: ['./savings.component.css'],
-  imports: [ReactiveFormsModule, CommonModule]
+  imports: [ReactiveFormsModule, CommonModule, HttpClientModule],
+  providers: [ExpenseService] // Ajoute ExpenseService aux providers
 })
 export class SavingsComponent implements OnInit {
   savingsForm!: FormGroup;
@@ -22,6 +24,8 @@ export class SavingsComponent implements OnInit {
   monthlyIncome: number = 0;
   monthlyExpenses: number = 0;
   monthlyBudget: number = 0;
+  totalExpenses: number = 0;
+  totalAmountByCategory: number = 0;
 
   constructor(private fb: FormBuilder, private savingsService: SavingsService, private expenseService: ExpenseService) {}
 
@@ -43,7 +47,10 @@ export class SavingsComponent implements OnInit {
     this.monthlyIncome = this.savingsService.getCurrentIncome();
 
     // Récupérer les dépenses mensuelles depuis le service
-    this.monthlyExpenses = this.expenseService.getTotalExpenses();
+    this.loadTotalExpenses();
+
+    // Récupérer le montant total par catégorie (exemple avec la catégorie 'Food')
+    this.loadTotalAmountByCategory('Food');
   }
 
   onSaveGoal(): void {
@@ -96,7 +103,7 @@ export class SavingsComponent implements OnInit {
 
   onSetBudget(): void {
     if (this.budgetForm.valid) {
-      this.monthlyExpenses = this.budgetForm.value.expenses;
+      
       this.calculateBudget();
       this.budgetForm.reset();
     }
@@ -104,5 +111,27 @@ export class SavingsComponent implements OnInit {
 
   calculateBudget(): void {
     this.monthlyBudget = this.monthlyIncome - this.monthlyExpenses;
+  }
+
+  loadTotalExpenses(): void {
+    this.expenseService.getTotalExpenses().subscribe(
+      (data: any) => { // Déclare explicitement le type
+        this.monthlyExpenses = data.totalAmount;
+      },
+      (error: any) => { // Déclare explicitement le type
+        console.error('Error fetching total expenses:', error);
+      }
+    );
+  }
+
+  loadTotalAmountByCategory(category: string): void {
+    this.expenseService.getTotalAmountByCategory(category).subscribe(
+      (data: any) => { // Déclare explicitement le type
+        this.totalAmountByCategory = data.totalAmount;
+      },
+      (error: any) => { // Déclare explicitement le type
+        console.error(`Error fetching total amount for category ${category}:`, error);
+      }
+    );
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import { SavingsService } from '../services/savings.service';
 import { ExpenseService } from '../services/expenses.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-reports',
@@ -12,6 +13,7 @@ export class ReportsComponent implements OnInit {
   chart!: Chart;
   savingsAmount: number = 0;
   expensesByCategory: { category: string; amount: number }[] = [];
+  private expensesSubject = new BehaviorSubject<{ category: string; amount: number }[]>([]);
 
   constructor(private savingsService: SavingsService, private expenseService: ExpenseService) {
     Chart.register(...registerables);
@@ -27,7 +29,18 @@ export class ReportsComponent implements OnInit {
     // Get expenses by category from the service
     this.updateExpensesByCategory();
 
+    // Create the chart after fetching the expenses
     this.createPieChart();
+
+    // Subscribe to the expenses subject to update the chart
+    this.expensesSubject.subscribe((expenses) => {
+      this.expensesByCategory = expenses;
+      if (this.chart) {
+        this.chart.data.labels = this.expensesByCategory.map((item) => item.category);
+        this.chart.data.datasets[0].data = this.expensesByCategory.map((item) => item.amount);
+        this.chart.update();
+      }
+    });
   }
 
   // Method to update the savings in the chart
@@ -41,20 +54,30 @@ export class ReportsComponent implements OnInit {
       this.expensesByCategory.push({ category: 'Savings', amount: this.savingsAmount });
     }
 
-    // After updating, refresh the chart
-    this.chart.update();
+    // Update the expenses subject
+    this.expensesSubject.next(this.expensesByCategory);
   }
 
   // Method to update expenses by category
   updateExpensesByCategory(): void {
     const categories = ['Housing', 'Food', 'Transport', 'Utilities'];
-    this.expensesByCategory = categories.map((category) => ({
-      category,
-      amount: this.expenseService.getTotalAmountByCategory(category),
-    }));
+    const expenses: { category: string; amount: number }[] = [];
+
+    categories.forEach((category) => {
+      this.expenseService.getTotalAmountByCategory(category).subscribe(
+        (data) => {
+          expenses.push({ category, amount: data.totalAmount });
+          this.expensesSubject.next(expenses); // Update the expenses subject
+        },
+        (error) => {
+          console.error(`Error fetching total amount for category ${category}:`, error);
+        }
+      );
+    });
 
     // Add savings category
-    this.expensesByCategory.push({ category: 'Savings', amount: this.savingsAmount });
+    expenses.push({ category: 'Savings', amount: this.savingsAmount });
+    this.expensesSubject.next(expenses); // Update the expenses subject
   }
 
   createPieChart(): void {
